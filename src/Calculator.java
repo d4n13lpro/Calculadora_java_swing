@@ -120,10 +120,7 @@ public class Calculator implements ActionListener {
         frame.add(clrButton);
     }
 
-    // Método principal
-    public static void main(String[] args) {
-        new Calculator(); // Inicia la aplicación
-    }
+
 
     // Maneja eventos de los botones
     @Override
