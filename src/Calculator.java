@@ -6,10 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Calculator implements ActionListener {
-    private JFrame frame;
-    private JTextField textField;
-    private JButton[] numberButtons = new JButton[10];
-    private JButton[] functionButtons;
+    private final JFrame frame;
+    private final JTextField textField;
+    private final JButton[] numberButtons = new JButton[10];
     private JButton addButton, subButton, mulButton, divButton, decButton, equButton, delButton, clrButton, negButton;
     private JPanel panel;
 
@@ -17,17 +16,18 @@ public class Calculator implements ActionListener {
     private char operator = ' ';
     private boolean isResultDisplayed = false;
 
-    public Calculator () {
+    public Calculator() {
         frame = new JFrame("Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(420 , 550);
+        frame.setSize(420, 550);
         frame.setLayout(null);
 
         textField = new JTextField();
-        textField.setBounds(50 , 25 , 300 , 50);
-        textField.setFont(new Font("Ink Free" , Font.BOLD , 30));
+        textField.setBounds(50, 25, 300, 50);
+        textField.setFont(new Font("San Francisco", Font.PLAIN, 30));
         textField.setEditable(false);
         textField.setHorizontalAlignment(JTextField.RIGHT);
+        textField.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         initializeButtons();
         configurePanel();
@@ -36,48 +36,50 @@ public class Calculator implements ActionListener {
         frame.setVisible(true);
     }
 
-    private void initializeButtons () {
+    private void initializeButtons() {
+        Font buttonFont = new Font("San Francisco", Font.PLAIN, 20);
 
-        // Creacion de los botones de simbolos
-        Font buttonFont = new Font("Arial" , Font.BOLD , 25);
-
-        String[] functionSymbols = {"+" , "-" , "*" , "/" , "." , "=" , "Del" , "C" , "(-)"};
-        functionButtons = new JButton[functionSymbols.length];
+        String[] functionSymbols = {"+", "-", "×", "÷", ".", "=", "Del", "C", "±"};
+        JButton[] functionButtons = new JButton[functionSymbols.length];
 
         Map<String, JButton> buttonMap = new HashMap<>();
         for (int i = 0; i < functionSymbols.length; i++) {
             functionButtons[i] = new JButton(functionSymbols[i]);
             functionButtons[i].setFont(buttonFont);
             functionButtons[i].setFocusable(false);
+            functionButtons[i].setBackground(new Color(245, 245, 245));
+            functionButtons[i].setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             functionButtons[i].addActionListener(this);
-            buttonMap.put(functionSymbols[i] , functionButtons[i]);
+            buttonMap.put(functionSymbols[i], functionButtons[i]);
         }
-        // Asignacion de cada boton a cada simbolo
+        System.out.println(buttonMap);
+
         addButton = buttonMap.get("+");
         subButton = buttonMap.get("-");
-        mulButton = buttonMap.get("*");
-        divButton = buttonMap.get("/");
+        mulButton = buttonMap.get("×");
+        divButton = buttonMap.get("÷");
         decButton = buttonMap.get(".");
         equButton = buttonMap.get("=");
         delButton = buttonMap.get("Del");
         clrButton = buttonMap.get("C");
-        negButton = buttonMap.get("(-)");
+        negButton = buttonMap.get("±");
 
-        // Creacion y asignacion de los botones numericos
         for (int i = 0; i < 10; i++) {
             numberButtons[i] = new JButton(String.valueOf(i));
             numberButtons[i].setFont(buttonFont);
             numberButtons[i].setFocusable(false);
+            numberButtons[i].setBackground(Color.WHITE);
+            numberButtons[i].setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             numberButtons[i].addActionListener(this);
         }
     }
 
-    private void configurePanel () {
-        // Configuracion del panes de botones
+    private void configurePanel() {
         panel = new JPanel();
-        panel.setBounds(50 , 100 , 300 , 300);
-        panel.setLayout(new GridLayout(4 , 4 , 10 , 10));
-        // Agregar los componentes a la ventana
+        panel.setBounds(50, 100, 300, 300);
+        panel.setLayout(new GridLayout(4, 4, 10, 10));
+        panel.setBackground(new Color(240, 240, 240));
+
         panel.add(numberButtons[1]);
         panel.add(numberButtons[2]);
         panel.add(numberButtons[3]);
@@ -96,25 +98,25 @@ public class Calculator implements ActionListener {
         panel.add(divButton);
     }
 
-    private void addComponentsToFrame () {
+    private void addComponentsToFrame() {
         frame.add(textField);
         frame.add(panel);
 
-        negButton.setBounds(50 , 430 , 100 , 50);
-        delButton.setBounds(150 , 430 , 100 , 50);
-        clrButton.setBounds(250 , 430 , 100 , 50);
+        negButton.setBounds(50, 430, 100, 50);
+        delButton.setBounds(150, 430, 100, 50);
+        clrButton.setBounds(250, 430, 100, 50);
 
         frame.add(negButton);
         frame.add(delButton);
         frame.add(clrButton);
     }
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         new Calculator();
     }
 
     @Override
-    public void actionPerformed (ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
         for (int i = 0; i < 10; i++) {
@@ -153,7 +155,7 @@ public class Calculator implements ActionListener {
 
         if (source == delButton) {
             String text = textField.getText();
-            textField.setText(text.length() > 1 ? text.substring(0 , text.length() - 1) : "");
+            textField.setText(text.length() > 1 ? text.substring(0, text.length() - 1) : "");
             return;
         }
 
@@ -162,7 +164,7 @@ public class Calculator implements ActionListener {
         }
     }
 
-    private void handleOperation (char op) {
+    private void handleOperation(char op) {
         if (!textField.getText().isEmpty()) {
             num1 = new BigDecimal(textField.getText());
             operator = op;
@@ -170,7 +172,7 @@ public class Calculator implements ActionListener {
         }
     }
 
-    private void calculateResult () {
+    private void calculateResult() {
         if (!textField.getText().isEmpty() && operator != ' ') {
             num2 = new BigDecimal(textField.getText());
 
@@ -181,15 +183,15 @@ public class Calculator implements ActionListener {
                 case '-':
                     result = num1.subtract(num2);
                     break;
-                case '*':
+                case '×':
                     result = num1.multiply(num2);
                     break;
-                case '/':
+                case '÷':
                     if (num2.compareTo(BigDecimal.ZERO) == 0) {
                         textField.setText("Error");
                         return;
                     }
-                    result = num1.divide(num2 , 10 , BigDecimal.ROUND_HALF_UP);
+                    result = num1.divide(num2, 10, BigDecimal.ROUND_HALF_UP);
                     break;
             }
 
@@ -200,7 +202,7 @@ public class Calculator implements ActionListener {
         }
     }
 
-    private void toggleNegation () {
+    private void toggleNegation() {
         if (!textField.getText().isEmpty()) {
             BigDecimal temp = new BigDecimal(textField.getText()).negate();
             textField.setText(temp.toPlainString());
